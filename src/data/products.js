@@ -40,9 +40,10 @@ export async function loadProducts() {
   }
 
   try {
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
     const [targetRes, walmartRes] = await Promise.all([
-      fetch('/target.txt'),
-      fetch('/walmart.txt')
+      fetch(`${base}target.txt`),
+      fetch(`${base}walmart.txt`)
     ]);
 
     if (targetRes.ok && walmartRes.ok) {

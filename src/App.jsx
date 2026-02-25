@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './screens/Home';
 import JoinParty from './screens/JoinParty';
 import SelectStore from './screens/SelectStore';
@@ -14,7 +14,7 @@ import FinalResults from './screens/FinalResults';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/join" element={<JoinParty />} />
@@ -30,6 +30,6 @@ export default function App() {
         <Route path="/final/:code" element={<FinalResults />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
