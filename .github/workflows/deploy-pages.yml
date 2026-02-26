@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
 
 permissions:
   contents: read
@@ -28,6 +28,8 @@ jobs:
 
       - name: Install and build
         run: npm ci && npm run build
+        env:
+          NODE_ENV: production
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
