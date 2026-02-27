@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { subscribeToParty, assignPlayerToTeam, startGame } from '../lib/gameState';
-import { useFirebase } from '../lib/firebase';
 import { loadProducts, getProductsByCategories, getRandomProducts } from '../data/products';
 
 export default function TeamsLobby() {
@@ -75,16 +74,12 @@ export default function TeamsLobby() {
 
   if (!party) return <div className="page"><p>Loading...</p></div>;
 
-  const hasFirebase = useFirebase();
   const teamKeys = Object.keys(party.teams || {}).sort();
   const unassigned = (party.unassigned || []).map(id => party.players?.[id]).filter(Boolean);
 
   return (
     <div className="page lobby-page">
       <h1 className="party-code">Party Code: {code}</h1>
-      {!hasFirebase && (
-        <p className="form-hint warning">Firebase not configured — lobby is local only. Configure .env for cross-device play.</p>
-      )}
 
       {me?.isHost ? (
         <>

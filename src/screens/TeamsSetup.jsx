@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loadProducts, getCategories } from '../data/products';
 import { createParty, createPlayerId } from '../lib/gameState';
-import { useFirebase } from '../lib/firebase';
 
 export default function TeamsSetup() {
   const [hostName, setHostName] = useState('');
@@ -77,13 +76,8 @@ export default function TeamsSetup() {
 
   if (loading) return <div className="page"><p>Loading...</p></div>;
 
-  const hasFirebase = useFirebase();
-
   return (
     <div className="page">
-      {!hasFirebase && (
-        <p className="form-hint warning">Teams mode works best with Firebase for cross-device play. Add your Firebase config to .env.</p>
-      )}
       <h1 className="title">Teams Setup</h1>
       <form onSubmit={handleConfirm} className="form setup-form">
         <label>
