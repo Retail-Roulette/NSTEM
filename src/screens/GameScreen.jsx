@@ -119,6 +119,9 @@ export default function GameScreen() {
 
   const product = getMyProduct();
 
+  // Teams: unassigned players don't get a product — show helpful message
+  const isUnassigned = party.mode === 'teams' && !party.players?.[me?.playerId]?.team;
+
   // Teams: if any teammate already found it, show that result for everyone on the team (same time, same points)
   const roundKey = `round${party.currentRound || 1}`;
   const myTeam = party.mode === 'teams' ? party.players?.[me?.playerId]?.team : null;
@@ -155,7 +158,9 @@ export default function GameScreen() {
       </div>
 
       <div className="product-display">
-        <h2 className="product-name">{product || 'Loading...'}</h2>
+        <h2 className="product-name">
+          {isUnassigned ? 'Ask the host to assign you to a team' : (product || 'Loading...')}
+        </h2>
       </div>
 
       {displayFoundResult && (

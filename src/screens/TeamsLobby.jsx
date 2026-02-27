@@ -9,6 +9,7 @@ export default function TeamsLobby() {
   const [party, setParty] = useState(null);
   const [me, setMe] = useState(null);
   const [dragging, setDragging] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(`party_${code}`);
@@ -33,11 +34,12 @@ export default function TeamsLobby() {
     const numTeams = party.numTeams || 2;
     const assignments = {};
     const shuffled = getRandomProducts(products, numTeams * (party.rounds || 3));
+    const fallbackProduct = products[0] || 'Find an item in the store';
     for (let r = 1; r <= (party.rounds || 1); r++) {
       assignments[`round${r}`] = {};
       for (let t = 1; t <= numTeams; t++) {
         const idx = (r - 1) * numTeams + (t - 1);
-        assignments[`round${r}`][`team${t}`] = shuffled[idx % shuffled.length] || products[0];
+        assignments[`round${r}`][`team${t}`] = shuffled[idx % Math.max(1, shuffled.length)] || fallbackProduct;
       }
     }
     await startGame(code, {
@@ -65,6 +67,18 @@ export default function TeamsLobby() {
     const playerId = e.dataTransfer.getData('text/plain') || dragging;
     if (playerId) handleAssign(playerId, teamKey);
     setDragging(null);
+    setSelectedPlayer(null);
+  }
+
+  function handleClickTeam(teamKey) {
+    if (!me?.isHost || !selectedPlayer) return;
+    handleAssign(selectedPlayer, teamKey);
+    setSelectedPlayer(null);
+  }
+
+  function handleClickPlayer(playerId) {
+    if (!me?.isHost) return;
+    setSelectedPlayer(prev => prev === playerId ? null : playerId);
   }
 
   function handleDragOver(e) {
@@ -85,17 +99,19 @@ export default function TeamsLobby() {
         <>
           <div className="lobby-grid">
             <div
-              className="lobby-box unassigned"
+              className={`lobby-box unassigned ${selectedPlayer ? 'selected' : ''}`}
               onDrop={(e) => handleDrop(e, null)}
               onDragOver={handleDragOver}
+              onClick={() => selectedPlayer && handleClickTeam(null)}
             >
               <h3>Unassigned</h3>
               {unassigned.map(p => (
                 <div
                   key={p.id}
-                  className="player-chip"
+                  className={`player-chip ${selectedPlayer === p.id ? 'selected' : ''}`}
                   draggable
                   onDragStart={(e) => handleDragStart(e, p.id)}
+                  onClick={() => handleClickPlayer(p.id)}
                 >
                   {p.name}
                 </div>
@@ -107,14 +123,16 @@ export default function TeamsLobby() {
                 className="lobby-box team-box"
                 onDrop={(e) => handleDrop(e, tk)}
                 onDragOver={handleDragOver}
+                onClick={() => selectedPlayer && handleClickTeam(tk)}
               >
                 <h3>{tk.replace('team', 'Team ')}</h3>
                 {(party.teams?.[tk] || []).map(id => party.players?.[id]).filter(Boolean).map(p => (
                   <div
                     key={p.id}
-                    className="player-chip"
+                    className={`player-chip ${selectedPlayer === p.id ? 'selected' : ''}`}
                     draggable
                     onDragStart={(e) => handleDragStart(e, p.id)}
+                    onClick={() => handleClickPlayer(p.id)}
                   >
                     {p.name}
                   </div>
@@ -122,6 +140,9 @@ export default function TeamsLobby() {
               </div>
             ))}
           </div>
+          {selectedPlayer && (
+            <p className="form-hint">Click a team box to assign the selected player, or click again to deselect.</p>
+          )}
           <button className="btn btn-primary btn-large" onClick={handleStart}>
             Start Game
           </button>

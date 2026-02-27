@@ -259,6 +259,15 @@ input, select {
   cursor: grabbing;
 }
 
+.player-chip.selected {
+  outline: 2px solid var(--accent, #f80);
+  outline-offset: 2px;
+}
+
+.lobby-box.selected {
+  outline: 2px dashed var(--accent, #f80);
+}
+
 .player-list {
   list-style: none;
 }
