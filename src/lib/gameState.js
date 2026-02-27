@@ -59,7 +59,7 @@ export async function createParty(config) {
       [hostId]: { id: hostId, name: hostName, team: null },
     },
     teams: config.mode === 'teams' ? Object.fromEntries(
-      Array.from({ length: config.numTeams }, (_, i) => [`team${i + 1}`, []])
+      Array.from({ length: Math.max(2, config.numTeams || 2) }, (_, i) => [`team${i + 1}`, []])
     ) : null,
     unassigned: [hostId],
     state: 'lobby',

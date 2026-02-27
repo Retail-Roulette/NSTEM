@@ -88,7 +88,13 @@ export default function TeamsLobby() {
 
   if (!party) return <div className="page"><p>Loading...</p></div>;
 
-  const teamKeys = Object.keys(party.teams || {}).sort();
+  // Always show Team 1, Team 2, etc. — derive from numTeams if teams object is missing (e.g. old data or Firebase)
+  const numTeams = Math.max(2, party.numTeams || 2);
+  const teamKeysFromData = Object.keys(party.teams || {}).sort();
+  const teamKeys = teamKeysFromData.length >= numTeams
+    ? teamKeysFromData
+    : Array.from({ length: numTeams }, (_, i) => `team${i + 1}`);
+  const teams = party.teams || Object.fromEntries(teamKeys.map(tk => [tk, []]));
   const unassigned = (party.unassigned || []).map(id => party.players?.[id]).filter(Boolean);
 
   return (
@@ -126,7 +132,7 @@ export default function TeamsLobby() {
                 onClick={() => selectedPlayer && handleClickTeam(tk)}
               >
                 <h3>{tk.replace('team', 'Team ')}</h3>
-                {(party.teams?.[tk] || []).map(id => party.players?.[id]).filter(Boolean).map(p => (
+                {(teams[tk] || []).map(id => party.players?.[id]).filter(Boolean).map(p => (
                   <div
                     key={p.id}
                     className={`player-chip ${selectedPlayer === p.id ? 'selected' : ''}`}
