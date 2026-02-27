@@ -34,7 +34,7 @@ export default function GameScreen() {
       if (p?.state === 'playing' && p?.roundStartTime && !roundStartRef.current) {
         roundStartRef.current = p.roundStartTime;
       }
-      // Singular: end round only when ALL players have found it
+      // Singular: end round when ALL players have found it
       if (p?.mode === 'singular' && p?.state === 'playing' && p?.roundStartTime) {
         const roundKey = `round${p.currentRound || 1}`;
         const roundResults = p.roundResults?.[roundKey] || {};
@@ -42,6 +42,19 @@ export default function GameScreen() {
         const allFound = playerIds.length > 0 && playerIds.every(pid => roundResults[pid] != null);
         if (allFound) {
           endRound();
+        }
+      }
+      // Teams: end round when ALL teams have found their item
+      if (p?.mode === 'teams' && p?.state === 'playing' && p?.roundStartTime && p?.productAssignments) {
+        const roundKey = `round${p.currentRound || 1}`;
+        const roundData = p.productAssignments[roundKey];
+        const roundResults = p.roundResults?.[roundKey] || {};
+        if (roundData) {
+          const teamKeys = Object.keys(roundData);
+          const allTeamsFound = teamKeys.length > 0 && teamKeys.every(tk => roundResults[tk] != null);
+          if (allTeamsFound) {
+            endRound();
+          }
         }
       }
     });
