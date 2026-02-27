@@ -70,3 +70,16 @@ If you changed the repo name on GitHub, you **must** update the app’s base pat
 
 5. **Hard refresh**  
    - Try a hard refresh: **Ctrl+Shift+R** (Windows) or **Cmd+Shift+R** (Mac), or open the site in a private/incognito window.
+
+---
+
+## If the workflow run is failing
+
+- **Build job fails (e.g. `npm ci` or `npm run build`)**  
+  The workflow was updated to use `npm install` instead of `npm ci` so the lockfile doesn’t have to be in sync. If it still fails, open the failed run in the **Actions** tab, click the **build** job, and read the red error message (e.g. missing dependency, syntax error).
+
+- **Deploy job fails**  
+  Usually due to permissions or the Pages environment:
+  1. Go to **Settings → Pages**. Under **Build and deployment**, **Source** must be **GitHub Actions** (not “Deploy from a branch”).
+  2. Go to **Settings → Environments**. If you see **github-pages**, open it and remove any “Required reviewers” / protection rules that block the deploy, or add your user as allowed.
+  3. In **Settings → Actions → General**, under “Workflow permissions”, choose **Read and write permissions** so the workflow can deploy.

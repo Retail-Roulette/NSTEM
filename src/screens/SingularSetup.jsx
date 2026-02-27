@@ -46,6 +46,7 @@ export default function SingularSetup() {
         categories,
       });
       sessionStorage.setItem(`party_${code}`, JSON.stringify({
+        id: hostId,
         playerId: hostId,
         playerName: name,
         isHost: true,

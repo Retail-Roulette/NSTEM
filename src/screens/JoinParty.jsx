@@ -33,6 +33,7 @@ export default function JoinParty() {
       }
       const uc = code.trim().toUpperCase();
       const gameState = {
+        id: result.playerId,
         playerId: result.playerId,
         playerName: name.trim(),
         isHost: false,

@@ -198,6 +198,11 @@ input, select {
   font-size: 0.9rem;
 }
 
+.form-hint.warning {
+  color: var(--accent, #f80);
+  margin-bottom: 0.5rem;
+}
+
 /* Setup form */
 .setup-form {
   max-width: 360px;

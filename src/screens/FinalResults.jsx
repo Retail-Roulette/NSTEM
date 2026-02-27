@@ -28,7 +28,8 @@ export default function FinalResults() {
   }, [party?.redirectToCode, party?.mode, me, code, navigate]);
 
   async function handlePlayAgain() {
-    if (!me || me.id !== party?.hostId) return;
+    const myId = me?.id ?? me?.playerId;
+    if (!me || myId !== party?.hostId) return;
     setCreating(true);
     try {
       const { newCode } = await playAgain(code);
@@ -111,7 +112,7 @@ export default function FinalResults() {
         </div>
       )}
       <div className="final-actions">
-        {party.hostId === me?.id ? (
+        {party.hostId === (me?.id ?? me?.playerId) ? (
           <button
             className="btn btn-primary"
             onClick={handlePlayAgain}
